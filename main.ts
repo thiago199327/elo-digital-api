@@ -1,27 +1,42 @@
-import { serve } from "https://deno.land";
-
-// Isso é para que a API possa ser acessada pelo seu aplicativo em qualquer lugar (CORS)
+// Remova qualquer linha de "import" do topo que aponte para https://deno.com ou https://deno.land
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
-// Esta função lida com todas as requisições que chegam na sua API
-serve(async (req) => {
+// O Deno.serve já é nativo, não precisa importar nada!
+Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
 
-  // Rota principal para verificar se a API está funcionando
+  // Lida com a verificação de segurança (CORS) do navegador
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  // Rota Principal
   if (url.pathname === "/") {
-    return new Response("API do Elo Digital funcionando!", { headers: corsHeaders });
+    return new Response(
+      JSON.stringify({ status: "API Online", projeto: "Elo Digital" }), 
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 
-  // Rota para criar um novo "Elo" (o que você desenhou no Figma)
+  // Rota para criar Elos
   if (url.pathname === "/elos" && req.method === "POST") {
-    // Aqui é onde o código para salvar os dados no banco de dados (Deno KV) entraria
-    // Por enquanto, apenas retornamos uma mensagem de sucesso
-    return new Response("Novo Elo criado com sucesso!", { headers: corsHeaders, status: 201 });
+    try {
+      const body = await req.json();
+      return new Response(
+        JSON.stringify({ mensagem: "Elo criado com sucesso!", dados: body }), 
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 201 }
+      );
+    } catch {
+      return new Response(
+        JSON.stringify({ erro: "Erro ao ler o JSON enviado" }), 
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
   }
 
-  // Se a rota não for encontrada, retorna 404
-  return new Response("Página não encontrada", { headers: corsHeaders, status: 404 });
+  return new Response("Não encontrado", { headers: corsHeaders, status: 404 });
 });
