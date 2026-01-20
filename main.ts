@@ -1,42 +1,52 @@
-// Remova qualquer linha de "import" do topo que aponte para https://deno.com ou https://deno.land
+// 1. Abrimos o banco de dados
+const kv = await Deno.openKv();
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
-// O Deno.serve já é nativo, não precisa importar nada!
 Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
 
-  // Lida com a verificação de segurança (CORS) do navegador
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+
+  // ROTA: Listar todos os Elos (GET /elos)
+  if (url.pathname === "/elos" && req.method === "GET") {
+    const elos = [];
+    for await (const entry of kv.list({ prefix: ["elos"] })) {
+      elos.push(entry.value);
+    }
+    return new Response(JSON.stringify(elos), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 
-  // Rota Principal
-  if (url.pathname === "/") {
-    return new Response(
-      JSON.stringify({ status: "API Online", projeto: "Elo Digital" }), 
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
-  }
-
-  // Rota para criar Elos
+  // ROTA: Criar um novo Elo (POST /elos)
   if (url.pathname === "/elos" && req.method === "POST") {
     try {
       const body = await req.json();
-      return new Response(
-        JSON.stringify({ mensagem: "Elo criado com sucesso!", dados: body }), 
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 201 }
-      );
-    } catch {
-      return new Response(
-        JSON.stringify({ erro: "Erro ao ler o JSON enviado" }), 
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
-      );
+      
+      // CORREÇÃO: use 'crypto' com 'c' minúsculo
+      const id = crypto.randomUUID(); 
+      
+      const novoElo = { id, ...body, criadoEm: new Date().toISOString() };
+
+      await kv.set(["elos", id], novoElo);
+
+      return new Response(JSON.stringify({ mensagem: "Salvo no Deno KV!", elo: novoElo }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 201,
+      });
+    } catch (e) {
+      console.error(e); // Isso vai mostrar o erro real no terminal do servidor
+      return new Response(JSON.stringify({ erro: "Erro ao processar dados", detalhes: e.message }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
   }
 
-  return new Response("Não encontrado", { headers: corsHeaders, status: 404 });
+  return new Response("API Elo Digital", { headers: corsHeaders });
 });
