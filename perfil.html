@@ -1,41 +1,58 @@
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Elo Digital</title>
+    <style>
+        :root { --primary: #7B2CBF; --secondary: #E63946; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: #f0f2f5; margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        /* Garante que o conteúdo apareça mesmo sem dados */
+        .profile-card {
+            background: white; border-radius: 25px; padding: 30px;
+            width: 100%; max-width: 350px; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-top: 50px;
+        }
+        .avatar { width: 80px; height: 80px; background: #ddd; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .nav-menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
 
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#7B2CBF">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <div class="profile-card">
+        <div class="avatar" id="avatarImg">👤</div>
+        <h2 id="userName">Usuário</h2>
+        <p id="userEmail">Carregando e-mail...</p>
+        <hr>
+        <button onclick="logout()" style="background:#E63946; color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer;">SAIR</button>
+    </div>
+
+    <div class="nav-menu">
+        <a href="index.html" style="text-decoration:none;">🏠</a>
+        <a href="perfil.html" style="text-decoration:none;">👤</a>
+    </div>
 
     <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-          .then(() => console.log("Elo Digital: App Pronto para Instalar!"))
-          .catch((err) => console.log("Erro no Service Worker", err));
-      }
+        // Verificação imediata
+        const email = localStorage.getItem('usuarioLogado');
+        
+        if (!email) {
+            console.log("Nenhum usuário logado. Redirecionando...");
+            // Se quiser testar sem login, comente a linha abaixo temporariamente:
+            // window.location.href = "login.html"; 
+        } else {
+            document.getElementById('userEmail').innerText = email;
+            document.getElementById('userName').innerText = email.split('@')[0];
+        }
+
+        function logout() {
+            localStorage.removeItem('usuarioLogado');
+            location.href = 'login.html';
+        }
     </script>
-
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; padding-bottom: 100px !important; }
-        .profile-header { background: white; border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-top: 10px solid #7B2CBF; max-width: 600px; margin: 0 auto 20px; }
-        .avatar-large { width: 100px; height: 100px; border-radius: 50%; background: #E63946; color: white; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; margin: 0 auto 15px; border: 5px solid #f4f4f9; }
-        
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 600px; margin: 0 auto 20px; }
-        .stat-card { background: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .stat-number { display: block; font-size: 1.8rem; font-weight: bold; color: #7B2CBF; }
-        
-        /* Secção de Medalhas */
-        .medals-section { background: white; border-radius: 20px; padding: 25px; max-width: 600px; margin: 0 auto; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .medals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .medal { text-align: center; opacity: 0.3; filter: grayscale(1); transition: 0.3s; }
-        .medal.unlocked { opacity: 1; filter: grayscale(0); }
-        .medal-icon { font-size: 2.5rem; }
-        .medal-name { font-size: 0.7rem; font-weight: bold; color: #333; display: block; margin-top: 5px; }
-
-        /* Estilos do Menu Inferior (Essencial para navegação) */
-        .nav-menu { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: white; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); border-top: 2px solid #7B2CBF; z-index: 1000; padding-bottom: 10px; }
-        .nav-item { text-decoration: none; color: #666; display: flex; flex-direction: column; align-items: center; font-size: 1.4rem; }
-        .nav-item small { font-size: 0.65rem; font-weight: bold; text-transform: uppercase; margin-top: 4px; }
-        .nav-add { background: #E63946; color: white; width: 50px; height
+</body>
+</html>
