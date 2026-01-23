@@ -1,1 +1,0 @@
-echo '{ "tasks": { "start": "deno run --allow-net main.ts" } }' > deno.json
