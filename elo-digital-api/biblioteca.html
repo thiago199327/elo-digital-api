@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de Honra - Elo Digital</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7B2CBF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+          .then(() => console.log("Elo Digital: App Pronto para Instalar!"))
+          .catch((err) => console.log("Erro no Service Worker", err));
+      }
+    </script>
+
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; padding-bottom: 90px !important; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: #7B2CBF; margin: 0; }
+        
+        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; }
+        
+        .book-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-bottom: 5px solid #E63946; transition: 0.3s; }
+        .book-card:hover { transform: translateY(-5px); }
+        .book-info { padding: 20px; }
+        .category { font-size: 0.7rem; font-weight: bold; text-transform: uppercase; color: #7B2CBF; background: #f0e6ff; padding: 5px 10px; border-radius: 20px; }
+        .book-title { font-size: 1.2rem; color: #333; margin: 15px 0 10px 0; }
+        .book-desc { font-size: 0.9rem; color: #666; line-height: 1.4; height: 60px; overflow: hidden; }
+        
+        .btn-read { display: block; width: 100%; padding: 12px; background: #7B2CBF; color: white; border: none; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; border-radius: 8px; margin-top: 15px; }
+        .btn-ia-tip { background: #E63946; margin-top: 10px; }
+
+        /* Estilos do Menu */
+        .nav-menu { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: white; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); border-top: 2px solid #7B2CBF; z-index: 1000; padding-bottom: 10px; }
+        .nav-item { text-decoration: none; color: #666; display: flex; flex-direction: column; align-items: center; font-size: 1.4rem; }
+        .nav-item small { font-size: 0.65rem; font-weight: bold; text-transform: uppercase; margin-top: 4px; }
+        .nav-add { background: #E63946; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2rem; font-weight: bold; box-shadow: 0 4px 10px rgba(230, 57, 70, 0.4); margin-bottom: 20px; border: 4px solid white; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>📚 Biblioteca de Conquista</h1>
+        <p>Desenvolva seu caráter e conquiste o mundo.</p>
+    </div>
+
+    <div class="lib-grid">
+        <div class="book-card">
+            <div class="book-info">
+                <span class="category">Financeiro</span>
+                <h3 class="book-title">Mente de Riqueza</h3>
+                <p class="book-desc">Como organizar suas finanças para ter liberdade e poder de investimento.</p>
+                <button class="btn-read">LER RESUMO</button>
+                <button class="btn-read btn-ia-tip" onclick="pedirDicaIA('Finanças')">DICA DA I.A.</button>
+            </div>
+        </div>
+
+        <div class="book-card">
+            <div class="book-info">
+                <span class="category">Relacionamento</span>
+                <h3 class="book-title">Conexões de Honra</h3>
+                <p class="book-desc">A arte de se relacionar com respeito e construir elos indestrutíveis.</p>
+                <button class="btn-read">LER RESUMO</button>
+                <button class="btn-read btn-ia-tip" onclick="pedirDicaIA('Relacionamentos')">DICA DA I.A.</button>
+            </div>
+        </div>
+
+        <div class="book-card">
+            <div class="book-info">
+                <span class="category">Caráter</span>
+                <h3 class="book-title">Como Conquistar o Mundo</h3>
+                <p class="book-desc">O guia definitivo sobre liderança, honra e impacto na atualidade.</p>
+                <button class="btn-read">LER RESUMO</button>
+                <button class="btn-read btn-ia-tip" onclick="pedirDicaIA('Caráter e Liderança')">DICA DA I.A.</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-menu">
+        <a href="index.html" class="nav-item"><span>🏠</span><small>Painel</small></a>
+        <a href="biblioteca.html" class="nav-item"><span>📚</span><small>Biblioteca</small></a>
+        <a href="adicionar.html" class="nav-item"><div class="nav-add">＋</div></a>
+        <a href="chat.html" class="nav-item"><span>💬</span><small>Chat</small></a>
+        <a href="perfil.html" class="nav-item"><span>👤</span><small>Perfil</small></a>
+    </div>
+
+    <script>
+        async function pedirDicaIA(tema) {
+            const prompt = `Dê uma dica curta de 1 frase sobre ${tema} para um usuário do app Elo Digital que quer ser uma pessoa de honra.`;
+            alert("A Elo Digital I.A. está pensando em uma dica sobre " + tema + "...");
+            
+            try {
+                const res = await fetch('https://thiago19932-elo-digital-33.deno.dev/ia/analisar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ depoimento: prompt })
+                });
+                const data = await res.json();
+                alert("💡 DICA DA I.A.: " + data.comentario);
+            } catch (e) {
+                alert("Conecte a GEMINI_API_KEY no Deno para receber dicas!");
+            }
+        }
+    </script>
+</body>
+</html>

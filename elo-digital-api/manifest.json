@@ -1,0 +1,17 @@
+{
+  "name": "Elo Digital",
+  "short_name": "Elo",
+  "description": "Rede Social de Honra e Caráter",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f4f4f9",
+  "theme_color": "#7B2CBF",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3064/3064197.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

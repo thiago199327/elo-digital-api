@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorar Elos - Mundo</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7B2CBF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+          .then(() => console.log("Elo Digital: Explorador Pronto!"))
+          .catch((err) => console.log("Erro no Service Worker", err));
+      }
+    </script>
+
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; padding-bottom: 100px !important; }
+        .search-box { width: 100%; max-width: 500px; margin: 0 auto 30px; }
+        input[type="text"] { width: 100%; padding: 15px; border-radius: 25px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.05); outline: none; }
+        
+        .global-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; margin: 0 auto; }
+        
+        /* Card de Perfil Global */
+        .profile-card { background: white; border-radius: 20px; padding: 20px; display: flex; align-items: center; gap: 15px; position: relative; border: 1px solid #eee; transition: 0.3s; }
+        .profile-card:hover { transform: scale(1.02); }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; background: #7B2CBF; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.2rem; }
+        .info h4 { margin: 0; color: #333; }
+        .info p { margin: 5px 0 0; font-size: 0.8rem; color: #777; }
+        
+        /* Selo de Compatibilidade I.A. */
+        .ai-badge { position: absolute; top: -10px; right: 10px; background: #E63946; color: white; padding: 5px 12px; border-radius: 15px; font-size: 0.7rem; font-weight: bold; }
+        .btn-connect { margin-left: auto; background: #7B2CBF; color: white; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+
+        /* Estilos do Menu Inferior (Essencial) */
+        .nav-menu { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: white; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); border-top: 2px solid #7B2CBF; z-index: 1000; padding-bottom: 10px; }
+        .nav-item { text-decoration: none; color: #666; display: flex; flex-direction: column; align-items: center; font-size: 1.4rem; }
+        .nav-item small { font-size: 0.65rem; font-weight: bold; text-transform: uppercase; margin-top: 4px; }
+        .nav-add { background: #E63946; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2rem; font-weight: bold; box-shadow: 0 4px 10px rgba(230, 57, 70, 0.4); margin-bottom: 20px; border: 4px solid white; }
+    </style>
+</head>
+<body>
+
+    <div class="search-box">
+        <h2 style="text-align: center; color: #7B2CBF;">🌎 Explorar o Mundo</h2>
+        <input type="text" placeholder="Buscar Elos por nome, cidade ou interesse...">
+    </div>
