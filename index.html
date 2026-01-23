@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Elo Digital - Premium</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7B2CBF">
+    
+    <style>
+        :root {
+            --primary: #7B2CBF;
+            --secondary: #E63946;
+            --bg: #f0f2f5;
+            --glass: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+            color: #1a1a1a;
+            padding-bottom: 100px;
+        }
+
+        /* Top Bar */
+        .top-header {
+            width: 100%;
+            padding: 40px 20px;
+            text-align: center;
+            background: transparent;
+        }
+
+        .top-header h1 {
+            font-size: 2rem;
+            margin: 0;
+            background: linear-gradient(to right, #7B2CBF, #E63946);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        /* Interaction Panel - Glassmorphism */
+        .interaction-panel { 
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px; 
+            padding: 25px; 
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            width: 90%; 
+            max-width: 600px; 
+            margin-bottom: 30px;
+        }
+
+        textarea { 
+            width: 100%; 
+            height: 100px; 
+            border-radius: 16px; 
+            border: 1px solid rgba(0,0,0,0.1); 
+            padding: 15px; 
+            font-family: inherit; 
+            box-sizing: border-box; 
+            resize: none; 
+            background: rgba(255,255,255,0.5);
+            font-size: 1rem;
+        }
+
+        .btn-group { display: flex; gap: 12px; margin-top: 15px; }
+        
+        .btn {
+            border: none;
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+        }
+
+        .btn-ia { background: var(--primary); color: white; }
+        .btn-send { background: var(--secondary); color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); opacity: 0.9; }
+
+        /* Grid de Elos */
+        #grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px; 
+            width: 90%; 
+            max-width: 1100px; 
+        }
+
+        .card { 
+            background: var(--glass);
+            backdrop-filter: blur(5px);
+            border-radius: 20px; 
+            padding: 20px; 
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card:hover { transform: scale(1.03); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+
+        .card h3 { margin: 0 0 15px 0; font-size: 1.2rem; color: #333; }
+
+        /* Honor Bar */
+        .honor-container { margin: 15px 0; }
+        .honor-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; }
+        
+        .honor-bar-bg { background: rgba(0,0,0,0.05); border-radius: 10px; height: 8px; overflow: hidden; }
+        .honor-bar-fill { height: 100%; border-radius: 10px; transition: width 1s ease; }
+
+        /* Menu de Navegação Flutuante */
+        .nav-menu { 
+            position: fixed; 
+            bottom: 20px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            height: 70px; 
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center; 
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            z-index: 1000;
+        }
+
+        .nav-item { text-decoration: none; color: #888; display: flex; flex-direction: column; align-items: center; transition: 0.3s; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item span { font-size: 1.5rem; }
+        .nav-item small { font-size: 0.6rem; font-weight: bold; }
+
+        .nav-add-btn {
+            background: var(--secondary);
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 35px;
+            border: 5px solid #f0f2f5;
+            box-shadow: 0 5px 15px rgba(230, 57, 70, 0.3);
+        }
+
+        /* IA Result Area */
+        #areaIA { 
+            display: none; 
+            margin-top: 20px; 
+            padding: 15px; 
+            border-radius: 16px; 
+            background: rgba(123, 44, 191, 0.05); 
+            border: 1px solid rgba(123, 44, 191, 0.2); 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-header">
+        <h1>✨ ELO DIGITAL</h1>
+        <p style="color: #666; font-size: 0.9rem;">Sua rede de honra e caráter</p>
+    </div>
+    
+    <div class="interaction-panel">
+        <label style="font-weight: bold; font-size: 0.8rem; color: var(--primary); margin-bottom: 10px; display: block;">NOVO DEPOIMENTO</label>
+        <textarea id="txtDepoimento" placeholder="Reconheça a honra de um Elo..."></textarea>
+        
+        <div class="btn-group">
+            <button class="btn btn-ia" onclick="analisarComIA()">🤖 Analisar Caráter</button>
+            <button class="btn btn-send" onclick="enviarDepoimento()">🚀 Publicar</button>
+        </div>
+
+        <div id="areaIA">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; font-weight: bold; color: var(--primary);">VALORAÇÃO GEMINI</span>
+                <span id="notaIA" style="font-size: 1.2rem; font-weight: 900; color: var(--secondary);">0%</span>
+            </div>
+            <p id="comentarioIA" style="font-size: 0.85rem; color: #444; margin-top: 8px; line-height: 1.4;"></p>
+        </div>
+    </div>
+
+    <div id="grid">
+        </div>
+
+    <div class="nav-menu">
+        <a href="index.html" class="nav-item active"><span>🏠</span><small>Início</small></a>
+        <a href="biblioteca.html" class="nav-item"><span>📚</span><small>Saber</small></a>
+        <a href="adicionar.html" class="nav-item"><div class="nav-add-btn">+</div></a>
+        <a href="chat.html" class="nav-item"><span>💬</span><small>Chat</small></a>
+        <a href="perfil.html" class="nav-item"><span>👤</span><small>Eu</small></a>
+    </div>
+
+    <script>
+        const BASE_URL = "https://thiago19932-elo-digital-33.deno.dev";
+        let notaGlobal = 0;
+
+        async function carregarElos() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = "<p style='text-align:center; width:100%; opacity:0.5;'>Conectando à rede...</p>";
+            
+            try {
+                const res = await fetch(`${BASE_URL}/elos`);
+                const elos = await res.json();
+                grid.innerHTML = "";
+
+                for (const elo of elos) {
+                    const resScore = await fetch(`${BASE_URL}/score/${elo.email || 'geral'}`);
+                    const score = await resScore.json();
+                    const media = score.media ||
